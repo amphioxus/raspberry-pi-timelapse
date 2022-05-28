@@ -1,4 +1,4 @@
-#!/usr/local/env python3
+#!/usr/bin/env python
     
 #  Program to create a timelapse movie from an 
 #  image sequence shot by my Raspberry Pi.
