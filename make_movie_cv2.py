@@ -26,14 +26,19 @@ from datetime import datetime
 PAUSE_T = 100 # defines pause for live-preview of movie
     
     
-def parse_timestamp(ts, dateformat='%Y-%m-%d_%H%M'):
+def parse_timestamp(fn, dateformat='%Y-%m-%d_%H%M', prefix="image_"):
     """
-    Parses a timestamp string and returns newly formatted
-    strings used in the text overlay in a dictionary.
+    Parses an image filename string and returns information about the
+    timestamp in a dictionary. prefix will be removed from filename.
+    File name has to be in the following format:
+        <prefix>_<timestamp>
     """
     # e.g. 2018-02-09_1750
     # Create datetime object with the dateformat specified
     # in the dateformat argument:
+    fn_base = os.path.splitext(fn)[0]
+    if prefix:
+        ts = fn_base.split( prefix )[1]
     dt = datetime.strptime(ts, dateformat)
     return {'day': dt.strftime('%A'),
             'date': dt.strftime('%m-%d-%Y'),
@@ -137,11 +142,10 @@ def main():
             print('Failed to open video writer')
     
     # go through all the images in the folder:
-    for n,i in enumerate(imgs):
-        print('Current image: {}'.format(i))
-        curr_img = cv2.imread(os.path.join(imgpath,i))
-        ds = os.path.splitext(i)[0]
-        info = parse_timestamp(ds, dateformat=ARGS.timestamp_format)
+    for n,img_fn in enumerate(imgs):
+        print(f'Current image: {img_fn}')
+        curr_img = cv2.imread(os.path.join(imgpath, img_fn))
+        info = parse_timestamp(img_fn, dateformat=ARGS.timestamp_format)
         info['mincounter'] = '{:>3d} {:<s}'.format(n+1, 'min.')
         if ARGS.ts:
             format_timestamp(curr_img, info, (width, height))
@@ -173,7 +177,7 @@ def main():
                 cv2.addWeighted(curr_img, (1-alpha), next_img, alpha, 0, blendimg)
     
                 if ARGS.ts:
-                    format_timestamp(blendimg, info, (width, height))      
+                    format_timestamp(blendimg, info, (width, height))
     
                 if ARGS.view:
                     img_resized = cv2.resize(blendimg, 
