@@ -79,7 +79,7 @@ The computer needs to have XCode (and the command line tools) installed for this
 
 ## Conda environment
 
-Create a conda enviroment that contains the tools I'll need (jupyter notebooks, etc):
+Create a conda enviroment that contains the tools I'll need (jupyter notebooks, etc). The "mamba" package manager makes this step faster. (See: https://github.com/mamba-org/mamba) Use `conda` instead of `mamba` if you don't want to install mamba.
 
 
 ```bash
